@@ -104,14 +104,14 @@ Screenshots
 #from storage import init_storage
 #from seed import seed_admin, ensure_member_numbers, ensure_login_ids
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+#logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Mahal App API")
-api_router = APIRouter(prefix="/api")
+#app = FastAPI(title="Mahal App API")
+#api_router = APIRouter(prefix="/api")
 
 
-@api_router.get("/")
+#@api_router.get("/")
 #async def root():
    # return {"message": "Mahal App API"}
 
@@ -125,30 +125,30 @@ api_router = APIRouter(prefix="/api")
    # return {"build": BUILD_ID}
 
 
-api_router.include_router(auth_router)
-api_router.include_router(users_router)
-api_router.include_router(houses_router)
-api_router.include_router(finance_router)
-api_router.include_router(content_router)
-api_router.include_router(notifications_router)
-api_router.include_router(files_router)
-api_router.include_router(public_router)
-api_router.include_router(collections_router)
-api_router.include_router(events_router)
-api_router.include_router(ledger_router)
-api_router.include_router(chat_router)
-api_router.include_router(suggestions_router)
-api_router.include_router(backup_router)
-api_router.include_router(assistant_router)
-app.include_router(api_router)
+#api_router.include_router(auth_router)
+#api_router.include_router(users_router)
+#api_router.include_router(houses_router)
+#api_router.include_router(finance_router)
+#api_router.include_router(content_router)
+#api_router.include_router(notifications_router)
+#api_router.include_router(files_router)
+#api_router.include_router(public_router)
+#api_router.include_router(collections_router)
+#api_router.include_router(events_router)
+#api_router.include_router(ledger_router)
+#api_router.include_router(chat_router)
+#api_router.include_router(suggestions_router)
+#api_router.include_router(backup_router)
+#api_router.include_router(assistant_router)
+#app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+#app.add_middleware(
+   # CORSMiddleware,
+    #allow_credentials=True,
+   # allow_origins=os.environ.get("CORS_ORIGINS", "*").split(","),
+   # allow_methods=["*"],
+   # allow_headers=["*"],
+#)
 
 
 @app.on_event("startup")
@@ -168,21 +168,21 @@ app.add_middleware(
    # await seed_admin()
     #await ensure_member_numbers()
    # await ensure_login_ids()
-    asyncio.create_task(auto_reminder_loop())
-    asyncio.create_task(event_notify_loop())
-    asyncio.create_task(backup_loop())
+   # asyncio.create_task(auto_reminder_loop())
+    #asyncio.create_task(event_notify_loop())
+   # asyncio.create_task(backup_loop())
    # try:
-        init_storage()
-        logger.info("Storage initialized")
+       # init_storage()
+        #logger.info("Storage initialized")
     #except Exception as exc:
-        logger.error("Storage init failed: %s", exc)
-    logger.info("Startup complete")
+        #logger.error("Storage init failed: %s", exc)
+    #logger.info("Startup complete")
 
 
 @app.on_event("shutdown")
 #async def shutdown_db_client():
-    client.close()
-2. backend/core.py
+   # client.close()
+#2. backend/core.py
 #import os
 #import uuid
 #import bcrypt
@@ -191,11 +191,11 @@ app.add_middleware(
 #from fastapi import HTTPException, Request, Depends
 #from motor.motor_asyncio import AsyncIOMotorClient
 
-client = AsyncIOMotorClient(os.environ["MONGO_URL"])
-db = client[os.environ["DB_NAME"]]
+#client = AsyncIOMotorClient(os.environ["MONGO_URL"])
+#db = client[os.environ["DB_NAME"]]
 
-JWT_ALGORITHM = "HS256"
-NO_ID = {"_id": 0}
+#JWT_ALGORITHM = "HS256"
+#NO_ID = {"_id": 0}
 
 
 #def new_id() -> str:
@@ -223,25 +223,25 @@ NO_ID = {"_id": 0}
 
 
 #def create_access_token(user_id: str, role: str) -> str:
-    payload = {
-        "sub": user_id,
-        "role": role,
-        "type": "access",
-        "exp": datetime.now(timezone.utc) + timedelta(days=7),
-    }
+    #payload = {
+       # "sub": user_id,
+       # "role": role,
+       # "type": "access",
+       # "exp": datetime.now(timezone.utc) + timedelta(days=7),
+  #  }
     #return jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=JWT_ALGORITHM)
 
 
 #async def get_current_user(request: Request) -> dict:
-    token = request.cookies.get("access_token")
+   # token = request.cookies.get("access_token")
     #if not token:
-        auth = request.headers.get("Authorization", "")
+      #  auth = request.headers.get("Authorization", "")
        # if auth.startswith("Bearer "):
-            token = auth[7:]
+          #  token = auth[7:]
    # if not token:
        # raise HTTPException(status_code=401, detail="Not authenticated")
     #try:
-        payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALGORITHM])
+       # payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALGORITHM])
     #except jwt.ExpiredSignatureError:
         #raise HTTPException(status_code=401, detail="Token expired")
     #except jwt.InvalidTokenError:
@@ -269,7 +269,7 @@ NO_ID = {"_id": 0}
 
 
 #async def ledger_scope(user: dict) -> str:
-    """all = admin/treasurer; salath = appointed Salath committee member; none = read-only."""
+    #"""all = admin/treasurer; salath = appointed Salath committee member; none = read-only."""
     #if await can_finance(user):
        # return "all"
    # s = await db.settings.find_one({"key": "main"}, {"_id": 0, "salath_manager_ids": 1}) or {}
@@ -294,62 +294,62 @@ NO_ID = {"_id": 0}
 
 
 #def months_between(start: str, end: str) -> list:
-    sy, sm = map(int, start.split("-"))
-    ey, em = map(int, end.split("-"))
-    out = []
-    y, m = sy, sm
+   # sy, sm = map(int, start.split("-"))
+   # ey, em = map(int, end.split("-"))
+   # out = []
+   # y, m = sy, sm
    # while (y, m) <= (ey, em):
       #  out.append(f"{y:04d}-{m:02d}")
-        m += 1
+      #  m += 1
        # if m > 12:
-            m = 1
-            y += 1
+         #   m = 1
+           # y += 1
   #  return out
 
 
 #async def house_units(house: dict) -> dict:
-    """Dues are charged per paying member: head + every second member (working man 18+). Students / women / children pay nothing."""
+   # """Dues are charged per paying member: head + every second member (working man 18+). Students / women / children pay nothing."""
     #from routes.houses import classify
-    subs = 0
+  #  subs = 0
     #async for m in db.members.find({"house_id": house["id"]}, {"_id": 0, "name": 1, "relation": 1, "dob": 1, "gender": 1, "status": 1}):
        # if classify(m, house)["member_type"] == "sub":
-            subs += 1
+           # subs += 1
    # return {"units": 1 + subs, "sub": subs}
 
 
 #def member_filter(member_id):
-    """member_id=None → whole house; 'head' → payments not tagged to a sub-member; else that member's own payments."""
+   # """member_id=None → whole house; 'head' → payments not tagged to a sub-member; else that member's own payments."""
    # if member_id is None:
        # return {}
     #if member_id == "head":
         #return {"$and": [{"$or": [{"member_id": {"$exists": False}}, {"member_id": None}, {"member_id": ""}]}]}
-    return {"member_id": member_id}
+   # return {"member_id": member_id}
 
 
-async def house_dues(house: dict, member_id=None) -> dict:
-    """Amount-based monthly dues (× paying members): any partial amount reduces the balance; months are covered in order.
-    With member_id the share of one paying member (1 unit, his own payments) is returned."""
-    start = house.get("start_month") or current_month()
-    all_months = months_between(start, current_month())
-    units = 1 if member_id else (await house_units(house))["units"]
-    rate = float(house.get("subscription_amount", 0) or 0) * units
-    paid_amount = 0.0
-    async for p in db.payments.find({"house_id": house["id"], "$or": [{"type": "varisankhya"}, {"type": {"$exists": False}}], **member_filter(member_id)}, {"_id": 0, "amount": 1}):
-        paid_amount += float(p.get("amount", 0) or 0)
-    covered = int(paid_amount // rate) if rate > 0 else len(all_months)
-    paid_months = all_months[:covered]
-    pending = all_months[covered:] if rate > 0 else []
-    due = len(all_months) * rate
-    return {
-        "pending_months": pending,
-        "pending_count": len(pending),
-        "pending_amount": max(0.0, due - paid_amount),
-        "paid_months": paid_months,
-        "paid_amount": paid_amount,
-        "due_amount": due,
-        "advance": max(0.0, paid_amount - due),
+#async def house_dues(house: dict, member_id=None) -> dict:
+   # """Amount-based monthly dues (× paying members): any partial amount reduces the balance; months are covered in order.
+   # With member_id the share of one paying member (1 unit, his own payments) is returned."""
+   # start = house.get("start_month") or current_month()
+   # all_months = months_between(start, current_month())
+   # units = 1 if member_id else (await house_units(house))["units"]
+   # rate = float(house.get("subscription_amount", 0) or 0) * units
+   # paid_amount = 0.0
+    #async for p in db.payments.find({"house_id": house["id"], "$or": [{"type": "varisankhya"}, {"type": {"$exists": False}}], **member_filter(member_id)}, {"_id": 0, "amount": 1}):
+       # paid_amount += float(p.get("amount", 0) or 0)
+   # covered = int(paid_amount // rate) if rate > 0 else len(all_months)
+   # paid_months = all_months[:covered]
+   # pending = all_months[covered:] if rate > 0 else []
+   # due = len(all_months) * rate
+   # return {
+       # "pending_months": pending,
+       # "pending_count": len(pending),
+       # "pending_amount": max(0.0, due - paid_amount),
+       # "paid_months": paid_months,
+        #"paid_amount": paid_amount,
+       # "due_amount": due,
+       # "advance": max(0.0, paid_amount - due),
     }
-3. backend/messaging.py
+#3. backend/messaging.py
 import os
 import asyncio
 import logging
