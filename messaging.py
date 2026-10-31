@@ -30,7 +30,7 @@
 
 #Took a screenshot
 Screenshots
-Image 1
+#Image 1
 Oct 31, 10:24 AM
 
 $ cd /app/backend && set -a && . ./.env && set +a ...
