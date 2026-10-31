@@ -21,7 +21,7 @@
         } catch (e) {}
       })();
     </script>
-    <!-- Tracking allowlist — gates GTM/VWO/Rewardful/PartnerStack/Meta/TikTok Pixel to prod hosts only.
+   # <!-- Tracking allowlist — gates GTM/VWO/Rewardful/PartnerStack/Meta/TikTok Pixel to prod hosts only.
          (For PartnerStack — an essential-category script — this host gate is the ONLY gate.)
          Prevents third-party tracking scripts from firing on preview/CDN hosts (e.g. *.preview.emergentagent.com)
          where our bundle is served as a wake-up page, which would attribute pixel events to user-preview domains. -->
