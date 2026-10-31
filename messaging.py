@@ -71,7 +71,7 @@ Viewing
 paths
 Oct 31, 10:28 AM
 
-ഈ മൂന്ന് files-ഉം ഇപ്പോൾ പൂർണ്ണമായി restore ആയി server-ൽ പ്രവർത്തിക്കുന്നുണ്ട് (ഇവയാണ് നേരത്തെ ശൂന്യമായിപ്പോയത്). മുഴുവൻ code ഇതാ — ഇവ copy ചെയ്യാൻ മാത്രം; editor-ൽ cut/edit ചെയ്യരുത്.
+ഈ മൂന്ന് files-ഉം ഇപ്പോൾ പൂർണ്ണമായി restore ആയി server-ൽ പ്രവർത്തിക്കുന്നുണ്ട് (ഇവയാണ് നേരത്തെ ശൂന്യമായിപ്പോയത്). മുഴുവൻ code ഇതാ - ഇവ copy ചെയ്യാൻ മാത്രം; editor-ൽ cut/edit ചെയ്യരുത്.
 
 1. backend/server.py
 from pathlib import Path
