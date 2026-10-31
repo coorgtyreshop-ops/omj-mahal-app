@@ -264,7 +264,7 @@ Screenshots
    # if user.get("role") == "admin":
        # return True
     #s = await db.settings.find_one({"key": "main"}, {"_id": 0, "finance_manager_id": 1}) or {}
-    manager = s.get("finance_manager_id")
+   # manager = s.get("finance_manager_id")
     #return bool(manager) and user["id"] == manager
 
 
@@ -288,7 +288,7 @@ Screenshots
     #if kind == "donation":
        # prefix = settings.get("donation_prefix", "DON")
   #  counter = await db.counters.find_one_and_update(
-        {"key": kind}, {"$inc": {"seq": 1}}, upsert=True, return_document=True
+       # {"key": kind}, {"$inc": {"seq": 1}}, upsert=True, return_document=True
   #  )
    # return f"{prefix}-{counter['seq']:05d}"
 
@@ -350,94 +350,94 @@ Screenshots
        # "advance": max(0.0, paid_amount - due),
     }
 #3. backend/messaging.py
-import os
-import asyncio
-import logging
-from typing import Optional
-from urllib.parse import quote
-from core import db, new_id, now_iso
+#import os
+#$import asyncio
+#import logging
+#from typing import Optional
+#from urllib.parse import quote
+#from core import db, new_id, now_iso
 
-logger = logging.getLogger("messaging")
-
-
-_provider_cache = {"at": 0.0, "value": None}
+#logger = logging.getLogger("messaging")
 
 
-def _creds(settings: dict) -> dict:
-    """Twilio credentials: Settings (entered by admin in the app) override .env."""
-    return {
-        "sid": (settings.get("twilio_sid") or os.environ.get("TWILIO_ACCOUNT_SID", "")).strip(),
-        "token": (settings.get("twilio_token") or os.environ.get("TWILIO_AUTH_TOKEN", "")).strip(),
-        "sms_from": (settings.get("twilio_sms_from") or os.environ.get("TWILIO_SMS_FROM", "")).strip(),
-        "whatsapp_from": (settings.get("twilio_whatsapp_from") or os.environ.get("TWILIO_WHATSAPP_FROM", "")).strip(),
-        "provider": settings.get("notify_provider") or "phone",
-    }
+#_provider_cache = {"at": 0.0, "value": None}
 
 
-def provider_status(settings: Optional[dict] = None) -> dict:
-    c = _creds(settings or {})
-    live = c["provider"] == "twilio" and bool(c["sid"] and c["token"])
-    return {
-        "mode": "live" if live else "phone",
-        "provider": c["provider"],
-        "sms_enabled": live and bool(c["sms_from"]),
-        "whatsapp_enabled": live and bool(c["whatsapp_from"]),
-        "configured": bool(c["sid"] and c["token"]),
-    }
+#def _creds(settings: dict) -> dict:
+   # """Twilio credentials: Settings (entered by admin in the app) override .env."""
+   # return {
+       # "sid": (settings.get("twilio_sid") or os.environ.get("TWILIO_ACCOUNT_SID", "")).strip(),
+       # "token": (settings.get("twilio_token") or os.environ.get("TWILIO_AUTH_TOKEN", "")).strip(),
+       # "sms_from": (settings.get("twilio_sms_from") or os.environ.get("TWILIO_SMS_FROM", "")).strip(),
+        #"whatsapp_from": (settings.get("twilio_whatsapp_from") or os.environ.get("TWILIO_WHATSAPP_FROM", "")).strip(),
+        #"provider": settings.get("notify_provider") or "phone",
+   # }
 
 
-async def provider_status_async() -> dict:
-    import time
-    if time.time() - _provider_cache["at"] > 5 or _provider_cache["value"] is None:
-        s = await db.settings.find_one({"key": "main"}, {"_id": 0, "twilio_sid": 1, "twilio_token": 1, "twilio_sms_from": 1, "twilio_whatsapp_from": 1, "notify_provider": 1}) or {}
-        _provider_cache.update({"at": time.time(), "value": (provider_status(s), s)})
-    return _provider_cache["value"]
+#def provider_status(settings: Optional[dict] = None) -> dict:
+   # c = _creds(settings or {})
+   # live = c["provider"] == "twilio" and bool(c["sid"] and c["token"])
+   # return {
+      #  "mode": "live" if live else "phone",
+       # "provider": c["provider"],
+       # "sms_enabled": live and bool(c["sms_from"]),
+       # "whatsapp_enabled": live and bool(c["whatsapp_from"]),
+       # "configured": bool(c["sid"] and c["token"]),
+   # }
 
 
-def wa_link(to_e164: str, body: str) -> str:
-    return f"https://wa.me/{to_e164.lstrip('+')}?text={quote(body)}"
+#async def provider_status_async() -> dict:
+  #  import time
+   # if time.time() - _provider_cache["at"] > 5 or _provider_cache["value"] is None:
+       # s = await db.settings.find_one({"key": "main"}, {"_id": 0, "twilio_sid": 1, "twilio_token": 1, "twilio_sms_from": 1, "twilio_whatsapp_from": 1, "notify_provider": 1}) or {}
+       # _provider_cache.update({"at": time.time(), "value": (provider_status(s), s)})
+    #return _provider_cache["value"]
 
 
-def sms_link(to_e164: str, body: str) -> str:
-    return f"sms:{to_e164}?body={quote(body)}"
+#def wa_link(to_e164: str, body: str) -> str:
+   # return f"https://wa.me/{to_e164.lstrip('+')}?text={quote(body)}"
 
 
-def with_links(log: dict) -> dict:
-    if log.get("to", "").startswith("+"):
-        log["wa_link"] = wa_link(log["to"], log["body"])
-        log["sms_link"] = sms_link(log["to"], log["body"])
-    return log
+#def sms_link(to_e164: str, body: str) -> str:
+   # return f"sms:{to_e164}?body={quote(body)}"
 
 
-def e164(phone: str) -> str:
-    digits = "".join(ch for ch in (phone or "") if ch.isdigit())
-    if not digits:
-        return ""
-    if len(digits) == 10:
-        return f"+91{digits}"
-    return f"+{digits}"
+#def with_links(log: dict) -> dict:
+    #if log.get("to", "").startswith("+"):
+        #log["wa_link"] = wa_link(log["to"], log["body"])
+        #log["sms_link"] = sms_link(log["to"], log["body"])
+   # return log
 
 
-def _twilio_send(to: str, body: str, channel: str, c: dict) -> str:
-    from twilio.rest import Client
-    client = Client(c["sid"], c["token"])
-    if channel == "whatsapp":
-        frm = c["whatsapp_from"] if c["whatsapp_from"].startswith("whatsapp:") else f"whatsapp:{c['whatsapp_from']}"
-        msg = client.messages.create(from_=frm, to=f"whatsapp:{to}", body=body)
-    else:
-        msg = client.messages.create(from_=c["sms_from"], to=to, body=body)
-    return msg.sid
+#def e164(phone: str) -> str:
+   # digits = "".join(ch for ch in (phone or "") if ch.isdigit())
+   # if not digits:
+      #  return ""
+    #if len(digits) == 10:
+       # return f"+91{digits}"
+    #return f"+{digits}"
 
 
-async def send_message(to: str, body: str, channel: str, kind: str, ref: str = "", recipient_name: str = "", house_id: str = "") -> dict:
-    to_e164 = e164(to)
-    status, s = await provider_status_async()
-    log = {
-        "id": new_id(), "to": to_e164 or (to or ""), "recipient_name": recipient_name, "channel": channel,
-        "kind": kind, "body": body, "ref": ref, "house_id": house_id, "status": "queued", "error": "", "provider_sid": "", "created_at": now_iso(),
-    }
-    if not to_e164:
-        log.update({"status": "failed", "error": "No phone number"})
+#def _twilio_send(to: str, body: str, channel: str, c: dict) -> str:
+    #from twilio.rest import Client
+    #client = Client(c["sid"], c["token"])
+    #if channel == "whatsapp":
+       # frm = c["whatsapp_from"] if c["whatsapp_from"].startswith("whatsapp:") else f"whatsapp:{c['whatsapp_from']}"
+       # msg = client.messages.create(from_=frm, to=f"whatsapp:{to}", body=body)
+   # else:
+        #msg = client.messages.create(from_=c["sms_from"], to=to, body=body)
+   # return msg.sid
+
+
+#async def send_message(to: str, body: str, channel: str, kind: str, ref: str = "", recipient_name: str = "", house_id: str = "") -> dict:
+   # to_e164 = e164(to)
+    #status, s = await provider_status_async()
+    #log = {
+      #  "id": new_id(), "to": to_e164 or (to or ""), "recipient_name": recipient_name, "channel": channel,
+        #"kind": kind, "body": body, "ref": ref, "house_id": house_id, "status": "queued", "error": "", "provider_sid": "", "created_at": now_iso(),
+   # }
+   # if not to_e164:
+      #  log.update({"status": "failed", "error": "No phone number"})
     elif status["mode"] == "live" and status.get(f"{channel}_enabled"):
         try:
             log["provider_sid"] = await asyncio.to_thread(_twilio_send, to_e164, body, channel, _creds(s))
