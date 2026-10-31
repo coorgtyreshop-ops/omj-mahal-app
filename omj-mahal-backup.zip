@@ -46,7 +46,7 @@
             h === "getwingman.com" ||
             h.endsWith(".getwingman.com"));
       })();
-    </script>
+    
     <!-- Strips auth credentials from the URL before the third-party scripts below read document.URL at parse time.
          Only on hosts where those scripts may load (the allowlist above, before the consent gate narrows it): on
          preview/CDN hosts this bundle is a wake-up page, and the URL's credentials belong to the user's app. -->
