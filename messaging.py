@@ -1,34 +1,34 @@
 
-App builder
-Wingman
+#App builder
+#Wingman
 
-Home
-
-
+#Home
 
 
-Credits
-30% more
 
 
-Meet Your Advisor
+#Credits
+#30% more
 
-User Avatar
+
+#Meet Your Advisor
+
+#User Avatar
 
 
-Preview
+#Preview
 
-Manage
+#Manage
 
-Republish
-Loading...
-$ cd /app && git diff HEAD -- backend/storage.py; ...
-Oct 31, 10:23 AM
+#Republish
+#Loading...
+#$ cd /app && git diff HEAD -- backend/storage.py; ...
+#Oct 31, 10:23 AM
 
-$ cd /app && API=$(grep REACT_APP_BACKEND_URL fron...
-Oct 31, 10:23 AM
+#$ cd /app && API=$(grep REACT_APP_BACKEND_URL fron...
+#Oct 31, 10:23 AM
 
-Took a screenshot
+#Took a screenshot
 Screenshots
 Image 1
 Oct 31, 10:24 AM
