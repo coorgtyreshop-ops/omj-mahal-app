@@ -581,7 +581,7 @@ async def receipt_text(house: dict, doc: dict, settings: dict):
         text += tx(settings, "breakdown") + "".join(tx(settings, "line", label=label_for(settings, k), amount=f"{v['pending']:.0f}") for k, v in c.items() if isinstance(v, dict) and v.get("pending", 0) > 0)
         text += tx(settings, "total_pending", total=f"{c['total_pending']:.0f}")
     await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
-ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings → Backup & Restore → “Code download” button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
+ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings  Backup & Restore “Code download” button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
 
 
 
