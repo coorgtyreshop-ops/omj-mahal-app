@@ -289,7 +289,7 @@ NO_ID = {"_id": 0}
        # prefix = settings.get("donation_prefix", "DON")
   #  counter = await db.counters.find_one_and_update(
         {"key": kind}, {"$inc": {"seq": 1}}, upsert=True, return_document=True
-    )
+  #  )
    # return f"{prefix}-{counter['seq']:05d}"
 
 
@@ -498,90 +498,90 @@ def label_for(settings: dict, typ: str) -> str:
 def with_salaam(name: str, body: str, father: str = "", respectful: bool = True, settings: dict = None) -> str:
     """Every message starts with Salaam, then a respectful address ('ബഹുമാനപ്പെട്ട മഹല്ല് അംഗം <name> (<father>-ന്റെ മകൻ)' / Kannada), then the content."""
     head = body.lstrip()
-    if head.startswith(SALAAM) or head.startswith(SALAAM_KN) or head.lower().startswith("assalamu"):
-        return body
-    salaam = SALAAM_KN if msg_lang(settings) == "kn" else SALAAM
-    if not (name and name.strip()):
-        return f"{salaam},\n{body}"
-    who = name.strip() + (tx(settings, "son_of", father=father.strip()) if father and father.strip() else "")
-    return f"{salaam},\n{tx(settings, 'address', who=who)}\n{body}" if respectful else f"{salaam} {who},\n{body}"
+   # if head.startswith(SALAAM) or head.startswith(SALAAM_KN) or head.lower().startswith("assalamu"):
+       # return body
+   # salaam = SALAAM_KN if msg_lang(settings) == "kn" else SALAAM
+    #if not (name and name.strip()):
+       # return f"{salaam},\n{body}"
+    #who = name.strip() + (tx(settings, "son_of", father=father.strip()) if father and father.strip() else "")
+   # return f"{salaam},\n{tx(settings, 'address', who=who)}\n{body}" if respectful else f"{salaam} {who},\n{body}"
 
 
-def sign(settings: dict) -> str:
-    return "\n" + tx(settings, "sign", name=settings.get("short_name") or settings.get("mahal_name", "Mahal"))
+#def sign(settings: dict) -> str:
+   # return "\n" + tx(settings, "sign", name=settings.get("short_name") or settings.get("mahal_name", "Mahal"))
 
 
-def channels_for(setting: str) -> list:
-    if setting == "both":
-        return ["sms", "whatsapp"]
-    return [setting or "whatsapp"]
+#def channels_for(setting: str) -> list:
+   # if setting == "both":
+    #    return ["sms", "whatsapp"]
+   # return [setting or "whatsapp"]
 
 
-async def sub_members_with_phone(house: dict) -> list:
-    """Working adult sons (member_type 'sub') who have their own mobile — they get every house notification too."""
-    from routes.houses import classify
-    out = []
-    async for m in db.members.find({"house_id": house.get("id", "")}, {"_id": 0}):
-        m = classify(m, house)
-        if m.get("member_type") == "sub" and (m.get("phone") or "").strip():
-            out.append(m)
-    return out
+#async def sub_members_with_phone(house: dict) -> list:
+  #  """Working adult sons (member_type 'sub') who have their own mobile — they get every house notification too."""
+   # from routes.houses import classify
+   # out = []
+   # async for m in db.members.find({"house_id": house.get("id", "")}, {"_id": 0}):
+       # m = classify(m, house)
+       # if m.get("member_type") == "sub" and (m.get("phone") or "").strip():
+       #     out.append(m)
+   # return out
 
 
-async def notify_house(house: dict, body: str, kind: str, ref: str = "", channel_setting: str = "whatsapp"):
-    results = []
-    s = await db.settings.find_one({"key": "main"}, {"_id": 0, "notify_language": 1}) or {}
-    head_body = with_salaam(house.get("head_name", ""), body, house.get("father_name", ""), settings=s)
-    subs = await sub_members_with_phone(house)
-    for ch in channels_for(channel_setting):
-        to = house.get("whatsapp") or house.get("phone") if ch == "whatsapp" else house.get("phone")
-        sent_to = set()
-        if to:
-            sent_to.add(e164(to))
-            results.append(await send_message(to, head_body, ch, kind, ref, house.get("head_name", ""), house.get("id", "")))
-        for m in subs:
-            if e164(m["phone"]) in sent_to:
-                continue
-            sent_to.add(e164(m["phone"]))
-            results.append(await send_message(m["phone"], with_salaam(m.get("name", ""), body, settings=s), ch, kind, f"{ref}:{m['id']}" if ref else "", m.get("name", ""), house.get("id", "")))
-    return results
+#async def notify_house(house: dict, body: str, kind: str, ref: str = "", channel_setting: str = "whatsapp"):
+   # results = []
+    #s = await db.settings.find_one({"key": "main"}, {"_id": 0, "notify_language": 1}) or {}
+   # head_body = with_salaam(house.get("head_name", ""), body, house.get("father_name", ""), settings=s)
+   # subs = await sub_members_with_phone(house)
+   # for ch in channels_for(channel_setting):
+       # to = house.get("whatsapp") or house.get("phone") if ch == "whatsapp" else house.get("phone")
+       # sent_to = set()
+       # if to:
+           # sent_to.add(e164(to))
+           # results.append(await send_message(to, head_body, ch, kind, ref, house.get("head_name", ""), house.get("id", "")))
+       # for m in subs:
+           # if e164(m["phone"]) in sent_to:
+             #   continue
+           # sent_to.add(e164(m["phone"]))
+        #    results.append(await send_message(m["phone"], with_salaam(m.get("name", ""), body, settings=s), ch, kind, f"{ref}:{m['id']}" if ref else "", m.get("name", ""), house.get("id", "")))
+   # return results
 
 
-async def statement_text(house: dict, settings: dict) -> str:
-    """Committee-verified year statement sent when a house's account is released to the member."""
-    from routes.collections import house_collections
-    from datetime import date
-    c = await house_collections(house, settings)
-    heads = [(k, v) for k, v in c.items() if isinstance(v, dict) and v.get("kind") != "free" and (v.get("due", 0) > 0 or v.get("paid", 0) > 0)]
-    text = tx(settings, "statement", no=house.get("house_no", ""), year=date.today().year, date=date.today().strftime("%d-%m-%Y"))
-    text += "".join(tx(settings, "st_line", label=label_for(settings, k), due=f"{v['due']:.0f}", paid=f"{v['paid']:.0f}", pending=f"{v['pending']:.0f}") for k, v in heads)
-    text += tx(settings, "st_total", paid=f"{sum(v['paid'] for _, v in heads):.0f}", pending=f"{c['total_pending']:.0f}")
-    text += tx(settings, "all_clear") if c["total_pending"] <= 0 else ""
-    return text + tx(settings, "st_app") + sign(settings)
+#async def statement_text(house: dict, settings: dict) -> str:
+  #  """Committee-verified year statement sent when a house's account is released to the member."""
+    #from routes.collections import house_collections
+   # from datetime import date
+   # c = await house_collections(house, settings)
+   # heads = [(k, v) for k, v in c.items() if isinstance(v, dict) and v.get("kind") != "free" and (v.get("due", 0) > 0 or v.get("paid", 0) > 0)]
+   # text = tx(settings, "statement", no=house.get("house_no", ""), year=date.today().year, date=date.today().strftime("%d-%m-%Y"))
+   # text += "".join(tx(settings, "st_line", label=label_for(settings, k), due=f"{v['due']:.0f}", paid=f"{v['paid']:.0f}", pending=f"{v['pending']:.0f}") for k, v in heads)
+   # text += tx(settings, "st_total", paid=f"{sum(v['paid'] for _, v in heads):.0f}", pending=f"{c['total_pending']:.0f}")
+   # text += tx(settings, "all_clear") if c["total_pending"] <= 0 else ""
+   # return text + tx(settings, "st_app") + sign(settings)
 
 
-async def receipt_text(house: dict, doc: dict, settings: dict):
-    """Receipt notification; thanks the house when the whole balance is cleared."""
-    from routes.collections import house_collections
-    period = ", ".join(doc.get("months") or doc.get("years") or [])
-    label = label_for(settings, doc.get("type", "varisankhya"))
-    c = await house_collections(house, settings)
-    head = c.get(doc.get("type", "varisankhya")) or {}
-    period = f" {period}" if period else ""
-    text = tx(settings, "receipt", label=label, amount=f"{doc['amount']:.0f}", period=period, date=doc["date"], no=doc["receipt_no"])
-    if not house.get("statement_released"):
+#async def receipt_text(house: dict, doc: dict, settings: dict):
+  #  """Receipt notification; thanks the house when the whole balance is cleared."""
+   # from routes.collections import house_collections
+   # period = ", ".join(doc.get("months") or doc.get("years") or [])
+   # label = label_for(settings, doc.get("type", "varisankhya"))
+   # c = await house_collections(house, settings)
+   # head = c.get(doc.get("type", "varisankhya")) or {}
+   # period = f" {period}" if period else ""
+   # text = tx(settings, "receipt", label=label, amount=f"{doc['amount']:.0f}", period=period, date=doc["date"], no=doc["receipt_no"])
+   # if not house.get("statement_released"):
         # Committee has not released this house's statement yet — acknowledge the payment only, no balance figures.
-        return await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
-    if head.get("kind") != "free":
+    #    return await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
+   # if head.get("kind") != "free":
         text += tx(settings, "head", label=label, due=f"{head.get('due', 0):.0f}", paid=f"{head.get('paid', 0):.0f}")
         text += tx(settings, "head_pending", pending=f"{head['pending']:.0f}") if head.get("pending", 0) > 0 else tx(settings, "head_clear")
-    if c["total_pending"] <= 0:
+   # if c["total_pending"] <= 0:
         text += tx(settings, "all_clear")
-    else:
+   # else:
         text += tx(settings, "breakdown") + "".join(tx(settings, "line", label=label_for(settings, k), amount=f"{v['pending']:.0f}") for k, v in c.items() if isinstance(v, dict) and v.get("pending", 0) > 0)
         text += tx(settings, "total_pending", total=f"{c['total_pending']:.0f}")
-    await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
-ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings  Backup & Restore Code download button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
+    #await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
+#ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings  Backup & Restore Code download button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
 
 
 
