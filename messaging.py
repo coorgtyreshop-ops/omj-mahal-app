@@ -582,8 +582,9 @@ Screenshots
        # text += tx(settings, "total_pending", total=f"{c['total_pending']:.0f}")
     #await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
 #ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings  Backup & Restore Code download button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
-
-
-
-
-
+#
+#
+#
+#
+#
+#
