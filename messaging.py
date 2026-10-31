@@ -348,7 +348,7 @@ Screenshots
         #"paid_amount": paid_amount,
        # "due_amount": due,
        # "advance": max(0.0, paid_amount - due),
-    }
+   # }
 #3. backend/messaging.py
 #import os
 #$import asyncio
@@ -438,66 +438,66 @@ Screenshots
    # }
    # if not to_e164:
       #  log.update({"status": "failed", "error": "No phone number"})
-    elif status["mode"] == "live" and status.get(f"{channel}_enabled"):
-        try:
-            log["provider_sid"] = await asyncio.to_thread(_twilio_send, to_e164, body, channel, _creds(s))
-            log["status"] = "sent"
-        except Exception as exc:
-            log.update({"status": "failed", "error": str(exc)[:300]})
-            logger.warning("Twilio send failed: %s", exc)
-    else:
-        logger.info("[QUEUED %s] to %s: %s", channel.upper(), to_e164, body[:80])
-    await db.messages.insert_one(log)
-    log.pop("_id", None)
-    return with_links(log)
+   # elif status["mode"] == "live" and status.get(f"{channel}_enabled"):
+       # try:
+          #  log["provider_sid"] = await asyncio.to_thread(_twilio_send, to_e164, body, channel, _creds(s))
+           # log["status"] = "sent"
+       # except Exception as exc:
+           # log.update({"status": "failed", "error": str(exc)[:300]})
+           # logger.warning("Twilio send failed: %s", exc)
+   # else:
+       # logger.info("[QUEUED %s] to %s: %s", channel.upper(), to_e164, body[:80])
+   # await db.messages.insert_one(log)
+    #log.pop("_id", None)
+   # return with_links(log)
 
 
-SALAAM = "അസ്സലാമു അലൈക്കും"
-SALAAM_KN = "ಅಸ್ಸಲಾಮು ಅಲೈಕುಂ"
-LABELS_ML = {"varisankhya": "വരിസംഖ്യ", "eid_fitr": "ചെറിയ പെരുന്നാൾ", "eid_adha": "വലിയ പെരുന്നാൾ", "nabidinam": "നബിദിനം", "building": "Building Fund", "special": "പ്രത്യേക പിരിവ്", "auction": "ലേലം", "pledge": "വാഗ്ദാനം / മറ്റ്", "old_balance": "പഴയ ബാക്കി", "donation": "സംഭാവന"}
-LABELS_KN = {"varisankhya": "ವರಿಸಂಖ್ಯೆ", "eid_fitr": "ಚಿಕ್ಕ ಪೆರುನ್ನಾಳ್", "eid_adha": "ದೊಡ್ಡ ಪೆರುನ್ನಾಳ್", "nabidinam": "ನಬಿದಿನ", "building": "Building Fund", "special": "ವಿಶೇಷ ಸಂಗ್ರಹ", "auction": "ಹರಾಜು", "pledge": "ವಾಗ್ದಾನ / ಇತರ", "old_balance": "ಹಳೆಯ ಬಾಕಿ", "donation": "ದೇಣಿಗೆ"}
+#SALAAM = "അസ്സലാമു അലൈക്കും"
+#SALAAM_KN = "ಅಸ್ಸಲಾಮು ಅಲೈಕುಂ"
+#LABELS_ML = {"varisankhya": "വരിസംഖ്യ", "eid_fitr": "ചെറിയ പെരുന്നാൾ", "eid_adha": "വലിയ പെരുന്നാൾ", "nabidinam": "നബിദിനം", "building": "Building Fund", "special": "പ്രത്യേക പിരിവ്", "auction": "ലേലം", "pledge": "വാഗ്ദാനം / മറ്റ്", "old_balance": "പഴയ ബാക്കി", "donation": "സംഭാവന"}
+#LABELS_KN = {"varisankhya": "ವರಿಸಂಖ್ಯೆ", "eid_fitr": "ಚಿಕ್ಕ ಪೆರುನ್ನಾಳ್", "eid_adha": "ದೊಡ್ಡ ಪೆರುನ್ನಾಳ್", "nabidinam": "ನಬಿದಿನ", "building": "Building Fund", "special": "ವಿಶೇಷ ಸಂಗ್ರಹ", "auction": "ಹರಾಜು", "pledge": "ವಾಗ್ದಾನ / ಇತರ", "old_balance": "ಹಳೆಯ ಬಾಕಿ", "donation": "ದೇಣಿಗೆ"}
 
 # Message templates per notification language (settings.notify_language: ml | kn)
-TXT = {
-    "ml": {
-        "address": "ബഹുമാനപ്പെട്ട മഹല്ല് അംഗം {who},", "son_of": " ({father}-ന്റെ മകൻ)", "sign": "ജസാക്കല്ലാഹ് ഖൈർ — {name}",
-        "receipt": "{label}-ലേക്ക് ₹{amount}{period} {date}-ന് സ്വീകരിച്ചു. രസീത് നമ്പർ: {no}.", "head": "\n{label}: ആകെ ₹{due} · ഇതുവരെ അടച്ചത് ₹{paid} · ", "head_pending": "ബാക്കി ₹{pending}", "head_clear": "ഈ വക പൂർണ്ണമായി അടച്ചു ✔",
-        "breakdown": "\nഇനി ബാക്കിയുള്ളത്:", "line": "\n• {label}: ₹{amount}", "all_clear": "\nനിങ്ങളുടെ കുടിശ്ശിക മുഴുവൻ അടച്ചു തീർത്തിരിക്കുന്നു. വളരെ നന്ദി! അല്ലാഹു അനുഗ്രഹിക്കട്ടെ.", "total_pending": "\nഎല്ലാ വകകളിലും കൂടി ഇനി ബാക്കി: ₹{total}",
-        "balance": "വീട് {no} — നിങ്ങളുടെ ആകെ ബാക്കി ₹{amount} ({parts}). എത്രയും വേഗം അടച്ചു തീർക്കാൻ അഭ്യർത്ഥിക്കുന്നു.",
-        "statement": "കമ്മിറ്റി പരിശോധിച്ച നിങ്ങളുടെ വീട് {no}-ന്റെ {year} വർഷത്തെ കണക്ക് ({date}):", "st_line": "\n• {label}: ആകെ ₹{due} · അടച്ചത് ₹{paid} · ബാക്കി ₹{pending}", "st_total": "\nആകെ അടച്ചത്: ₹{paid} · ആകെ ബാക്കി: ₹{pending}", "st_app": "\nApp-ൽ 'എന്റെ ബാക്കി' തുറന്ന് വിശദമായി കാണാം; QR scan ചെയ്ത് അടയ്ക്കാം.",
-        "dues": "വീട് {no} — {n} മാസത്തെ വരിസംഖ്യ ({months}) ₹{amount} അടയ്ക്കാൻ ബാക്കിയുണ്ട്. എത്രയും വേഗം അടച്ചു തീർക്കാൻ അഭ്യർത്ഥിക്കുന്നു.",
-        "ack": "₹{amount} ({label}) UPI payment വിവരം ലഭിച്ചു{ref}. ട്രഷറർ പരിശോധിച്ച് confirm ചെയ്ത ശേഷം രസീത് WhatsApp-ൽ ലഭിക്കും.",
-        "reject": "₹{amount} ({label}) UPI payment വിവരം സ്ഥിരീകരിക്കാനായില്ല.{reason} ദയവായി ട്രഷററെ ബന്ധപ്പെടുക.", "reason": " കാരണം: {reason}",
-    },
-    "kn": {
-        "address": "ಗೌರವಾನ್ವಿತ ಮಹಲ್ ಸದಸ್ಯ {who},", "son_of": " ({father} ಅವರ ಮಗ)", "sign": "ಜಝಾಕಲ್ಲಾಹು ಖೈರ್ — {name}",
-        "receipt": "{label} ಗೆ ₹{amount}{period} {date} ರಂದು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ರಸೀದಿ ಸಂಖ್ಯೆ: {no}.", "head": "\n{label}: ಒಟ್ಟು ₹{due} · ಇದುವರೆಗೆ ಪಾವತಿ ₹{paid} · ", "head_pending": "ಬಾಕಿ ₹{pending}", "head_clear": "ಈ ಬಾಬ್ತು ಪೂರ್ಣ ಪಾವತಿಯಾಗಿದೆ ✔",
-        "breakdown": "\nಇನ್ನೂ ಬಾಕಿ ಇರುವುದು:", "line": "\n• {label}: ₹{amount}", "all_clear": "\nನಿಮ್ಮ ಎಲ್ಲಾ ಬಾಕಿ ಪಾವತಿಯಾಗಿದೆ. ತುಂಬಾ ಧನ್ಯವಾದಗಳು! ಅಲ್ಲಾಹ್ ಆಶೀರ್ವದಿಸಲಿ.", "total_pending": "\nಎಲ್ಲಾ ಬಾಬ್ತುಗಳಲ್ಲಿ ಇನ್ನೂ ಬಾಕಿ: ₹{total}",
-        "balance": "ಮನೆ {no} — ನಿಮ್ಮ ಒಟ್ಟು ಬಾಕಿ ₹{amount} ({parts}). ಆದಷ್ಟು ಬೇಗ ಪಾವತಿಸಿ ತೀರಿಸಲು ವಿನಂತಿ.",
-        "statement": "ಸಮಿತಿ ಪರಿಶೀಲಿಸಿದ ನಿಮ್ಮ ಮನೆ {no} ರ {year} ವರ್ಷದ ಲೆಕ್ಕ ({date}):", "st_line": "\n• {label}: ಒಟ್ಟು ₹{due} · ಪಾವತಿ ₹{paid} · ಬಾಕಿ ₹{pending}", "st_total": "\nಒಟ್ಟು ಪಾವತಿ: ₹{paid} · ಒಟ್ಟು ಬಾಕಿ: ₹{pending}", "st_app": "\nಆಪ್‌ನಲ್ಲಿ 'ನನ್ನ ಬಾಕಿ' ತೆರೆದು ವಿವರ ನೋಡಿ; QR scan ಮಾಡಿ ಪಾವತಿಸಬಹುದು.",
-        "dues": "ಮನೆ {no} — {n} ತಿಂಗಳ ವರಿಸಂಖ್ಯೆ ({months}) ₹{amount} ಪಾವತಿಸಲು ಬಾಕಿ ಇದೆ. ಆದಷ್ಟು ಬೇಗ ಪಾವತಿಸಿ ತೀರಿಸಲು ವಿನಂತಿ.",
-        "ack": "₹{amount} ({label}) UPI ಪಾವತಿ ಮಾಹಿತಿ ಬಂದಿದೆ{ref}. ಖಜಾಂಚಿ ಪರಿಶೀಲಿಸಿ confirm ಮಾಡಿದ ನಂತರ ರಸೀದಿ WhatsApp-ನಲ್ಲಿ ಬರುತ್ತದೆ.",
-        "reject": "₹{amount} ({label}) UPI ಪಾವತಿ ಮಾಹಿತಿ ದೃಢೀಕರಿಸಲಾಗಲಿಲ್ಲ.{reason} ದಯವಿಟ್ಟು ಖಜಾಂಚಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ.", "reason": " ಕಾರಣ: {reason}",
-    },
-}
+#TXT = {
+   # "ml": {
+       # "address": "ബഹുമാനപ്പെട്ട മഹല്ല് അംഗം {who},", "son_of": " ({father}-ന്റെ മകൻ)", "sign": "ജസാക്കല്ലാഹ് ഖൈർ — {name}",
+       # "receipt": "{label}-ലേക്ക് ₹{amount}{period} {date}-ന് സ്വീകരിച്ചു. രസീത് നമ്പർ: {no}.", "head": "\n{label}: ആകെ ₹{due} · ഇതുവരെ അടച്ചത് ₹{paid} · ", "head_pending": "ബാക്കി ₹{pending}", "head_clear": "ഈ വക പൂർണ്ണമായി അടച്ചു ✔",
+        #"breakdown": "\nഇനി ബാക്കിയുള്ളത്:", "line": "\n• {label}: ₹{amount}", "all_clear": "\nനിങ്ങളുടെ കുടിശ്ശിക മുഴുവൻ അടച്ചു തീർത്തിരിക്കുന്നു. വളരെ നന്ദി! അല്ലാഹു അനുഗ്രഹിക്കട്ടെ.", "total_pending": "\nഎല്ലാ വകകളിലും കൂടി ഇനി ബാക്കി: ₹{total}",
+        #"balance": "വീട് {no} — നിങ്ങളുടെ ആകെ ബാക്കി ₹{amount} ({parts}). എത്രയും വേഗം അടച്ചു തീർക്കാൻ അഭ്യർത്ഥിക്കുന്നു.",
+        #"statement": "കമ്മിറ്റി പരിശോധിച്ച നിങ്ങളുടെ വീട് {no}-ന്റെ {year} വർഷത്തെ കണക്ക് ({date}):", "st_line": "\n• {label}: ആകെ ₹{due} · അടച്ചത് ₹{paid} · ബാക്കി ₹{pending}", "st_total": "\nആകെ അടച്ചത്: ₹{paid} · ആകെ ബാക്കി: ₹{pending}", "st_app": "\nApp-ൽ 'എന്റെ ബാക്കി' തുറന്ന് വിശദമായി കാണാം; QR scan ചെയ്ത് അടയ്ക്കാം.",
+        #"dues": "വീട് {no} — {n} മാസത്തെ വരിസംഖ്യ ({months}) ₹{amount} അടയ്ക്കാൻ ബാക്കിയുണ്ട്. എത്രയും വേഗം അടച്ചു തീർക്കാൻ അഭ്യർത്ഥിക്കുന്നു.",
+       # "ack": "₹{amount} ({label}) UPI payment വിവരം ലഭിച്ചു{ref}. ട്രഷറർ പരിശോധിച്ച് confirm ചെയ്ത ശേഷം രസീത് WhatsApp-ൽ ലഭിക്കും.",
+       # "reject": "₹{amount} ({label}) UPI payment വിവരം സ്ഥിരീകരിക്കാനായില്ല.{reason} ദയവായി ട്രഷററെ ബന്ധപ്പെടുക.", "reason": " കാരണം: {reason}",
+ #   },
+   # "kn": {
+      #  "address": "ಗೌರವಾನ್ವಿತ ಮಹಲ್ ಸದಸ್ಯ {who},", "son_of": " ({father} ಅವರ ಮಗ)", "sign": "ಜಝಾಕಲ್ಲಾಹು ಖೈರ್ — {name}",
+       # "receipt": "{label} ಗೆ ₹{amount}{period} {date} ರಂದು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ರಸೀದಿ ಸಂಖ್ಯೆ: {no}.", "head": "\n{label}: ಒಟ್ಟು ₹{due} · ಇದುವರೆಗೆ ಪಾವತಿ ₹{paid} · ", "head_pending": "ಬಾಕಿ ₹{pending}", "head_clear": "ಈ ಬಾಬ್ತು ಪೂರ್ಣ ಪಾವತಿಯಾಗಿದೆ ✔",
+       # "breakdown": "\nಇನ್ನೂ ಬಾಕಿ ಇರುವುದು:", "line": "\n• {label}: ₹{amount}", "all_clear": "\nನಿಮ್ಮ ಎಲ್ಲಾ ಬಾಕಿ ಪಾವತಿಯಾಗಿದೆ. ತುಂಬಾ ಧನ್ಯವಾದಗಳು! ಅಲ್ಲಾಹ್ ಆಶೀರ್ವದಿಸಲಿ.", "total_pending": "\nಎಲ್ಲಾ ಬಾಬ್ತುಗಳಲ್ಲಿ ಇನ್ನೂ ಬಾಕಿ: ₹{total}",
+        #"balance": "ಮನೆ {no} — ನಿಮ್ಮ ಒಟ್ಟು ಬಾಕಿ ₹{amount} ({parts}). ಆದಷ್ಟು ಬೇಗ ಪಾವತಿಸಿ ತೀರಿಸಲು ವಿನಂತಿ.",
+        #"statement": "ಸಮಿತಿ ಪರಿಶೀಲಿಸಿದ ನಿಮ್ಮ ಮನೆ {no} ರ {year} ವರ್ಷದ ಲೆಕ್ಕ ({date}):", "st_line": "\n• {label}: ಒಟ್ಟು ₹{due} · ಪಾವತಿ ₹{paid} · ಬಾಕಿ ₹{pending}", "st_total": "\nಒಟ್ಟು ಪಾವತಿ: ₹{paid} · ಒಟ್ಟು ಬಾಕಿ: ₹{pending}", "st_app": "\nಆಪ್‌ನಲ್ಲಿ 'ನನ್ನ ಬಾಕಿ' ತೆರೆದು ವಿವರ ನೋಡಿ; QR scan ಮಾಡಿ ಪಾವತಿಸಬಹುದು.",
+        #"dues": "ಮನೆ {no} — {n} ತಿಂಗಳ ವರಿಸಂಖ್ಯೆ ({months}) ₹{amount} ಪಾವತಿಸಲು ಬಾಕಿ ಇದೆ. ಆದಷ್ಟು ಬೇಗ ಪಾವತಿಸಿ ತೀರಿಸಲು ವಿನಂತಿ.",
+       # "ack": "₹{amount} ({label}) UPI ಪಾವತಿ ಮಾಹಿತಿ ಬಂದಿದೆ{ref}. ಖಜಾಂಚಿ ಪರಿಶೀಲಿಸಿ confirm ಮಾಡಿದ ನಂತರ ರಸೀದಿ WhatsApp-ನಲ್ಲಿ ಬರುತ್ತದೆ.",
+       # "reject": "₹{amount} ({label}) UPI ಪಾವತಿ ಮಾಹಿತಿ ದೃಢೀಕರಿಸಲಾಗಲಿಲ್ಲ.{reason} ದಯವಿಟ್ಟು ಖಜಾಂಚಿಯನ್ನು ಸಂಪರ್ಕಿಸಿ.", "reason": " ಕಾರಣ: {reason}",
+  #  },
+#}
 
 
-def msg_lang(settings: dict) -> str:
-    return "kn" if (settings or {}).get("notify_language") == "kn" else "ml"
+#def msg_lang(settings: dict) -> str:
+    #return "kn" if (settings or {}).get("notify_language") == "kn" else "ml"
 
 
-def tx(settings: dict, key: str, **kw) -> str:
-    return TXT[msg_lang(settings)][key].format(**kw)
+#def tx(settings: dict, key: str, **kw) -> str:
+   # return TXT[msg_lang(settings)][key].format(**kw)
 
 
-def label_for(settings: dict, typ: str) -> str:
-    custom = next((h.get("name") for h in (settings or {}).get("custom_heads") or [] if isinstance(h, dict) and h.get("id") == typ), None)
-    return custom or (LABELS_KN if msg_lang(settings) == "kn" else LABELS_ML).get(typ, typ)
+#def label_for(settings: dict, typ: str) -> str:
+   # custom = next((h.get("name") for h in (settings or {}).get("custom_heads") or [] if isinstance(h, dict) and h.get("id") == typ), None)
+   # return custom or (LABELS_KN if msg_lang(settings) == "kn" else LABELS_ML).get(typ, typ)
 
 
-def with_salaam(name: str, body: str, father: str = "", respectful: bool = True, settings: dict = None) -> str:
-    """Every message starts with Salaam, then a respectful address ('ബഹുമാനപ്പെട്ട മഹല്ല് അംഗം <name> (<father>-ന്റെ മകൻ)' / Kannada), then the content."""
-    head = body.lstrip()
+#def with_salaam(name: str, body: str, father: str = "", respectful: bool = True, settings: dict = None) -> str:
+    #"""Every message starts with Salaam, then a respectful address ('ബഹുമാനപ്പെട്ട മഹല്ല് അംഗം <name> (<father>-ന്റെ മകൻ)' / Kannada), then the content."""
+  #  head = body.lstrip()
    # if head.startswith(SALAAM) or head.startswith(SALAAM_KN) or head.lower().startswith("assalamu"):
        # return body
    # salaam = SALAAM_KN if msg_lang(settings) == "kn" else SALAAM
@@ -573,13 +573,13 @@ def with_salaam(name: str, body: str, father: str = "", respectful: bool = True,
         # Committee has not released this house's statement yet — acknowledge the payment only, no balance figures.
     #    return await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
    # if head.get("kind") != "free":
-        text += tx(settings, "head", label=label, due=f"{head.get('due', 0):.0f}", paid=f"{head.get('paid', 0):.0f}")
-        text += tx(settings, "head_pending", pending=f"{head['pending']:.0f}") if head.get("pending", 0) > 0 else tx(settings, "head_clear")
+       # text += tx(settings, "head", label=label, due=f"{head.get('due', 0):.0f}", paid=f"{head.get('paid', 0):.0f}")
+       # text += tx(settings, "head_pending", pending=f"{head['pending']:.0f}") if head.get("pending", 0) > 0 else tx(settings, "head_clear")
    # if c["total_pending"] <= 0:
-        text += tx(settings, "all_clear")
+       # text += tx(settings, "all_clear")
    # else:
-        text += tx(settings, "breakdown") + "".join(tx(settings, "line", label=label_for(settings, k), amount=f"{v['pending']:.0f}") for k, v in c.items() if isinstance(v, dict) and v.get("pending", 0) > 0)
-        text += tx(settings, "total_pending", total=f"{c['total_pending']:.0f}")
+        #text += tx(settings, "breakdown") + "".join(tx(settings, "line", label=label_for(settings, k), amount=f"{v['pending']:.0f}") for k, v in c.items() if isinstance(v, dict) and v.get("pending", 0) > 0)
+       # text += tx(settings, "total_pending", total=f"{c['total_pending']:.0f}")
     #await notify_house(house, text + sign(settings), "receipt", doc["id"], settings.get("notify_channel", "whatsapp"))
 #ഇവ മൂന്നും മാത്രമല്ല - ബാക്കി 230+ files-ഉം (routes, frontend) Settings  Backup & Restore Code download button-ൽ ഒറ്റ ZIP ആയി കിട്ടും; അതാണ് മുഴുവൻ code സൂക്ഷിക്കാൻ എളുപ്പം.
 
