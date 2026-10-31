@@ -121,7 +121,7 @@ api_router = APIRouter(prefix="/api")
 
 #api_router.get("/version")
 #async def version():
-    """Changes on every backend start/deploy — the app uses it to drop stale caches on old phones."""
+   # """Changes on every backend start/deploy — the app uses it to drop stale caches on old phones."""
    # return {"build": BUILD_ID}
 
 
