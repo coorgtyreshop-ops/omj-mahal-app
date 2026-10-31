@@ -116,13 +116,13 @@ api_router = APIRouter(prefix="/api")
    # return {"message": "Mahal App API"}
 
 
-BUILD_ID = os.environ.get("BUILD_ID") or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+#BUILD_ID = os.environ.get("BUILD_ID") or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
 
 
-@api_router.get("/version")
+#api_router.get("/version")
 #async def version():
     """Changes on every backend start/deploy — the app uses it to drop stale caches on old phones."""
-    return {"build": BUILD_ID}
+   # return {"build": BUILD_ID}
 
 
 api_router.include_router(auth_router)
@@ -186,10 +186,10 @@ app.add_middleware(
 #import os
 #import uuid
 #import bcrypt
-import jwt
-from datetime import datetime, timezone, timedelta
-from fastapi import HTTPException, Request, Depends
-from motor.motor_asyncio import AsyncIOMotorClient
+#import jwt
+#from datetime import datetime, timezone, timedelta
+#from fastapi import HTTPException, Request, Depends
+#from motor.motor_asyncio import AsyncIOMotorClient
 
 client = AsyncIOMotorClient(os.environ["MONGO_URL"])
 db = client[os.environ["DB_NAME"]]
@@ -198,131 +198,131 @@ JWT_ALGORITHM = "HS256"
 NO_ID = {"_id": 0}
 
 
-def new_id() -> str:
-    return str(uuid.uuid4())
+#def new_id() -> str:
+  #  return str(uuid.uuid4())
 
 
-def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+#def now_iso() -> str:
+    #return datetime.now(timezone.utc).isoformat()
 
 
-def today() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+#def today() -> str:
+   # return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
-def current_month() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m")
+#def current_month() -> str:
+   # return datetime.now(timezone.utc).strftime("%Y-%m")
 
 
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+#def hash_password(password: str) -> str:
+   # return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
-def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+#def verify_password(plain: str, hashed: str) -> bool:
+    #return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
 
 
-def create_access_token(user_id: str, role: str) -> str:
+#def create_access_token(user_id: str, role: str) -> str:
     payload = {
         "sub": user_id,
         "role": role,
         "type": "access",
         "exp": datetime.now(timezone.utc) + timedelta(days=7),
     }
-    return jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=JWT_ALGORITHM)
+    #return jwt.encode(payload, os.environ["JWT_SECRET"], algorithm=JWT_ALGORITHM)
 
 
-async def get_current_user(request: Request) -> dict:
+#async def get_current_user(request: Request) -> dict:
     token = request.cookies.get("access_token")
-    if not token:
+    #if not token:
         auth = request.headers.get("Authorization", "")
-        if auth.startswith("Bearer "):
+       # if auth.startswith("Bearer "):
             token = auth[7:]
-    if not token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    try:
+   # if not token:
+       # raise HTTPException(status_code=401, detail="Not authenticated")
+    #try:
         payload = jwt.decode(token, os.environ["JWT_SECRET"], algorithms=[JWT_ALGORITHM])
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Token expired")
-    except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid token")
-    if payload.get("type") != "access":
-        raise HTTPException(status_code=401, detail="Invalid token type")
-    user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-    return user
+    #except jwt.ExpiredSignatureError:
+        #raise HTTPException(status_code=401, detail="Token expired")
+    #except jwt.InvalidTokenError:
+        #raise HTTPException(status_code=401, detail="Invalid token")
+   # if payload.get("type") != "access":
+       # raise HTTPException(status_code=401, detail="Invalid token type")
+   # user = await db.users.find_one({"id": payload["sub"]}, {"_id": 0, "password_hash": 0})
+   # if not user:
+       # raise HTTPException(status_code=401, detail="User not found")
+    #return user
 
 
-async def require_admin(user: dict = Depends(get_current_user)) -> dict:
-    if user.get("role") != "admin":
-        raise HTTPException(status_code=403, detail="Admin access required")
-    return user
+#async def require_admin(user: dict = Depends(get_current_user)) -> dict:
+    #if user.get("role") != "admin":
+       # raise HTTPException(status_code=403, detail="Admin access required")
+   # return user
 
 
-async def can_finance(user: dict) -> bool:
-    if user.get("role") == "admin":
-        return True
-    s = await db.settings.find_one({"key": "main"}, {"_id": 0, "finance_manager_id": 1}) or {}
+#async def can_finance(user: dict) -> bool:
+   # if user.get("role") == "admin":
+       # return True
+    #s = await db.settings.find_one({"key": "main"}, {"_id": 0, "finance_manager_id": 1}) or {}
     manager = s.get("finance_manager_id")
-    return bool(manager) and user["id"] == manager
+    #return bool(manager) and user["id"] == manager
 
 
-async def ledger_scope(user: dict) -> str:
+#async def ledger_scope(user: dict) -> str:
     """all = admin/treasurer; salath = appointed Salath committee member; none = read-only."""
-    if await can_finance(user):
-        return "all"
-    s = await db.settings.find_one({"key": "main"}, {"_id": 0, "salath_manager_ids": 1}) or {}
-    return "salath" if user["id"] in (s.get("salath_manager_ids") or []) else "none"
+    #if await can_finance(user):
+       # return "all"
+   # s = await db.settings.find_one({"key": "main"}, {"_id": 0, "salath_manager_ids": 1}) or {}
+    #return "salath" if user["id"] in (s.get("salath_manager_ids") or []) else "none"
 
 
-async def require_finance(user: dict = Depends(get_current_user)) -> dict:
-    if not await can_finance(user):
-        raise HTTPException(status_code=403, detail="Only the appointed treasurer can manage collections")
-    return user
+#async def require_finance(user: dict = Depends(get_current_user)) -> dict:
+   # if not await can_finance(user):
+      #  raise HTTPException(status_code=403, detail="Only the appointed treasurer can manage collections")
+   # return user
 
 
-async def next_receipt_no(kind: str) -> str:
-    settings = await db.settings.find_one({"key": "main"}, {"_id": 0}) or {}
-    prefix = settings.get("receipt_prefix", "RCT")
-    if kind == "donation":
-        prefix = settings.get("donation_prefix", "DON")
-    counter = await db.counters.find_one_and_update(
+#async def next_receipt_no(kind: str) -> str:
+  #  settings = await db.settings.find_one({"key": "main"}, {"_id": 0}) or {}
+   # prefix = settings.get("receipt_prefix", "RCT")
+    #if kind == "donation":
+       # prefix = settings.get("donation_prefix", "DON")
+  #  counter = await db.counters.find_one_and_update(
         {"key": kind}, {"$inc": {"seq": 1}}, upsert=True, return_document=True
     )
-    return f"{prefix}-{counter['seq']:05d}"
+   # return f"{prefix}-{counter['seq']:05d}"
 
 
-def months_between(start: str, end: str) -> list:
+#def months_between(start: str, end: str) -> list:
     sy, sm = map(int, start.split("-"))
     ey, em = map(int, end.split("-"))
     out = []
     y, m = sy, sm
-    while (y, m) <= (ey, em):
-        out.append(f"{y:04d}-{m:02d}")
+   # while (y, m) <= (ey, em):
+      #  out.append(f"{y:04d}-{m:02d}")
         m += 1
-        if m > 12:
+       # if m > 12:
             m = 1
             y += 1
-    return out
+  #  return out
 
 
-async def house_units(house: dict) -> dict:
+#async def house_units(house: dict) -> dict:
     """Dues are charged per paying member: head + every second member (working man 18+). Students / women / children pay nothing."""
-    from routes.houses import classify
+    #from routes.houses import classify
     subs = 0
-    async for m in db.members.find({"house_id": house["id"]}, {"_id": 0, "name": 1, "relation": 1, "dob": 1, "gender": 1, "status": 1}):
-        if classify(m, house)["member_type"] == "sub":
+    #async for m in db.members.find({"house_id": house["id"]}, {"_id": 0, "name": 1, "relation": 1, "dob": 1, "gender": 1, "status": 1}):
+       # if classify(m, house)["member_type"] == "sub":
             subs += 1
-    return {"units": 1 + subs, "sub": subs}
+   # return {"units": 1 + subs, "sub": subs}
 
 
-def member_filter(member_id):
+#def member_filter(member_id):
     """member_id=None → whole house; 'head' → payments not tagged to a sub-member; else that member's own payments."""
-    if member_id is None:
-        return {}
-    if member_id == "head":
-        return {"$and": [{"$or": [{"member_id": {"$exists": False}}, {"member_id": None}, {"member_id": ""}]}]}
+   # if member_id is None:
+       # return {}
+    #if member_id == "head":
+        #return {"$and": [{"$or": [{"member_id": {"$exists": False}}, {"member_id": None}, {"member_id": ""}]}]}
     return {"member_id": member_id}
 
 
