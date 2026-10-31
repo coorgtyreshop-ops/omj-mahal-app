@@ -49,7 +49,7 @@ Screenshots
 
 #Code chat-ൽ വലിയ ഫയലുകൾ പകർപ്പത് പ്രായോഗികമല്ല (237 files, 5 MB) - പകരം Settings  Backup & Restore  Code download ബട്ടൺ ചേർത്തിട്ടുണ്ട്: മുഴുവൻ frontend + backend കോഡ് ഒരു ZIP ആയി (password/key ഇല്ലാതെ .env.example ഉൾപ്പെടെ) admin-ന് ഡൗൺലോഡ് ചെയ്യാം  Google Drive-ൽ സൂക്ഷിക്കുക. 237 ഫയലുകൾ ടെസ്റ്റുചെയ്‌തു, admin അല്ലാത്തവർക്ക് 401 എറർ ലഭിക്കും. ദയവായി കോഡ് എഡിറ്ററിൽ് ബ്രൗസ് ചെയ്ത് എഡിറ്റ് ചെയ്യുന്നതിൽ നിന്ന് മറികടക്കുക.
 #:ശ്രദ്ധിക്കുക ഡാറ്റാബേസിൽ ഇപ്പോൾ വീടുകൾ/അംഗങ്ങൾ/payments 0 ആണ് - വീട് 001 ഒക്ടോബർ 3-നും 10-നും ഇടയിൽ ഡിലീറ്റായിട്ടുണ്ട് (ടെസ്റ്റ് ഡാറ്റ നീക്കം ചെയ്തതാണോ?). ആവശ്യമായി വന്നാൽ Settings Backup-ലെ ഒക്ടോബർ 3 സ്നാപ്ഷോട്ട് Restore ചെയ്ത് വീണ്ടെടുക്കാം.
-നിങ്ങളുടെ ഉൾക്കാഴ്ചയും പരിശോധനകളും കൂടി ഘടിപ്പിച്ചുണ്ടാക്കിയ ശ്രമം മുന്നോട്ട് പോവാൻ സഹായകരമാകും. ദയവായി പുതിയ ലിങ്ക് സന്ദർശിച്ച് പ്രവർത്തനം പരിശോദിക്കുകയും, എന്തെങ്കിലും പ്രശ്‌നങ്ങൾ ഉണ്ടെങ്കിൽ അറിയിക്കുമെന്നുമാണ് അഭ്യർത്ഥിക്കുന്നത്.
+#നിങ്ങളുടെഉൾക്കാഴ്ചയും പരിശോധനകളും കൂടി ഘടിപ്പിച്ചുണ്ടാക്കിയ ശ്രമം മുന്നോട്ട് പോവാൻ സഹായകരമാകും. ദയവായി പുതിയ ലിങ്ക് സന്ദർശിച്ച് പ്രവർത്തനം പരിശോദിക്കുകയും, എന്തെങ്കിലും പ്രശ്‌നങ്ങൾ ഉണ്ടെങ്കിൽ അറിയിക്കുമെന്നുമാണ് അഭ്യർത്ഥിക്കുന്നത്.
 
 
 #Custom domain
@@ -61,48 +61,48 @@ Screenshots
 
 
 #Agent Finished
-Oct 31, 10:25 AM
-sever.py,core.py,messaging.py
+#Oct 31, 10:25 AM
+#sever.py,core.py,messaging.py
 
-Oct 31, 10:28 AM
+#Oct 31, 10:28 AM
 
-Viewing
-3
-paths
-Oct 31, 10:28 AM
+#Viewing
+#3
+#paths
+#Oct 31, 10:28 AM
 
-ഈ മൂന്ന് files-ഉം ഇപ്പോൾ പൂർണ്ണമായി restore ആയി server-ൽ പ്രവർത്തിക്കുന്നുണ്ട് (ഇവയാണ് നേരത്തെ ശൂന്യമായിപ്പോയത്). മുഴുവൻ code ഇതാ - ഇവ copy ചെയ്യാൻ മാത്രം; editor-ൽ cut/edit ചെയ്യരുത്.
+#ഈ മൂന്ന് files-ഉം ഇപ്പോൾ പൂർണ്ണമായി restore ആയി server-ൽ പ്രവർത്തിക്കുന്നുണ്ട് (ഇവയാണ് നേരത്തെ ശൂന്യമായിപ്പോയത്). മുഴുവൻ code ഇതാ - ഇവ copy ചെയ്യാൻ മാത്രം; editor-ൽ cut/edit ചെയ്യരുത്.
 
-1. backend/server.py
-from pathlib import Path
-from dotenv import load_dotenv
+#1. backend/server.py
+#from pathlib import Path
+#from dotenv import load_dotenv
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / ".env")
+#ROOT_DIR = Path(__file__).parent
+#load_dotenv(ROOT_DIR / ".env")
 
-import os
-import asyncio
-import logging
-from datetime import datetime, timezone
-from fastapi import FastAPI, APIRouter
-from starlette.middleware.cors import CORSMiddleware
-from core import client, db
-from routes.auth_routes import router as auth_router, users_router
-from routes.houses import router as houses_router
-from routes.finance import router as finance_router
-from routes.content import router as content_router
-from routes.notifications import router as notifications_router, auto_reminder_loop
-from routes.files import router as files_router
-from routes.public import router as public_router
-from routes.collections import router as collections_router
-from routes.events import router as events_router, event_notify_loop
-from routes.ledger import router as ledger_router
-from routes.chat import router as chat_router
-from routes.suggestions import router as suggestions_router
-from routes.backup import router as backup_router, backup_loop
-from routes.assistant import router as assistant_router
-from storage import init_storage
-from seed import seed_admin, ensure_member_numbers, ensure_login_ids
+#import os
+#import asyncio
+#import logging
+#from datetime import datetime, timezone
+#from fastapi import FastAPI, APIRouter
+#from starlette.middleware.cors import CORSMiddleware
+#from core import client, db
+#from routes.auth_routes import router as auth_router, users_router
+#from routes.houses import router as houses_router
+#from routes.finance import router as finance_router
+#from routes.content import router as content_router
+#from routes.notifications import router as notifications_router, auto_reminder_loop
+#from routes.files import router as files_router
+#from routes.public import router as public_router
+#from routes.collections import router as collections_router
+#from routes.events import router as events_router, event_notify_loop
+#from routes.ledger import router as ledger_router
+#from routes.chat import router as chat_router
+#from routes.suggestions import router as suggestions_router
+#from routes.backup import router as backup_router, backup_loop
+#from routes.assistant import router as assistant_router
+#from storage import init_storage
+#from seed import seed_admin, ensure_member_numbers, ensure_login_ids
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -112,15 +112,15 @@ api_router = APIRouter(prefix="/api")
 
 
 @api_router.get("/")
-async def root():
-    return {"message": "Mahal App API"}
+#async def root():
+   # return {"message": "Mahal App API"}
 
 
 BUILD_ID = os.environ.get("BUILD_ID") or datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
 
 
 @api_router.get("/version")
-async def version():
+#async def version():
     """Changes on every backend start/deploy — the app uses it to drop stale caches on old phones."""
     return {"build": BUILD_ID}
 
@@ -152,40 +152,40 @@ app.add_middleware(
 
 
 @app.on_event("startup")
-async def startup():
-    await db.users.create_index("phone", unique=True)
-    await db.houses.create_index("house_no", unique=True)
-    await db.members.create_index("house_id")
-    await db.payments.create_index("house_id")
-    await db.payments.create_index("months")
-    await db.donations.create_index("fund_id")
-    await db.members.create_index("member_no")
-    await db.otps.create_index("phone")
-    await db.users.create_index("login_id", sparse=True)
-    await db.login_attempts.create_index("key")
-    await db.book_entries.create_index("book_id")
-    await db.chat_messages.create_index("created_at")
-    await seed_admin()
-    await ensure_member_numbers()
-    await ensure_login_ids()
+#async def startup():
+  #  await db.users.create_index("phone", unique=True)
+  #  await db.houses.create_index("house_no", unique=True)
+   # await db.members.create_index("house_id")
+    #await db.payments.create_index("house_id")
+  #  await db.payments.create_index("months")
+   # await db.donations.create_index("fund_id")
+   # await db.members.create_index("member_no")
+   # await db.otps.create_index("phone")
+    #await db.users.create_index("login_id", sparse=True)
+   # await db.login_attempts.create_index("key")
+   # await db.book_entries.create_index("book_id")
+   # await db.chat_messages.create_index("created_at")
+   # await seed_admin()
+    #await ensure_member_numbers()
+   # await ensure_login_ids()
     asyncio.create_task(auto_reminder_loop())
     asyncio.create_task(event_notify_loop())
     asyncio.create_task(backup_loop())
-    try:
+   # try:
         init_storage()
         logger.info("Storage initialized")
-    except Exception as exc:
+    #except Exception as exc:
         logger.error("Storage init failed: %s", exc)
     logger.info("Startup complete")
 
 
 @app.on_event("shutdown")
-async def shutdown_db_client():
+#async def shutdown_db_client():
     client.close()
 2. backend/core.py
-import os
-import uuid
-import bcrypt
+#import os
+#import uuid
+#import bcrypt
 import jwt
 from datetime import datetime, timezone, timedelta
 from fastapi import HTTPException, Request, Depends
